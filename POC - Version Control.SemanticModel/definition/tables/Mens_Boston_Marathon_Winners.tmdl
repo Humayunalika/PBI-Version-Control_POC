@@ -1,0 +1,76 @@
+table Mens_Boston_Marathon_Winners
+	lineageTag: 722042d6-8a89-462c-80ee-c8a00aeca7a7
+
+	measure 'Count of Winners' = count(Mens_Boston_Marathon_Winners[Country])
+		formatString: 0
+		lineageTag: 0f1488ea-c6fe-4258-89b4-6a2a7521fe1a
+
+	column Year
+		dataType: string
+		lineageTag: 454a6f41-8f65-44ad-a1aa-a724ad98020a
+		summarizeBy: none
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Winner
+		dataType: string
+		lineageTag: e017eeb0-75c5-473e-bc5a-cb621815038c
+		summarizeBy: none
+		sourceColumn: Winner
+
+		annotation SummarizationSetBy = Automatic
+
+	column Country
+		dataType: string
+		lineageTag: b5c38774-ee49-4f98-be15-26437169c992
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = Automatic
+
+	column Time
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: df231ca7-6ea2-4f6d-9fc0-4447a8a44004
+		summarizeBy: none
+		sourceColumn: Time
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column 'Distance (Miles)'
+		dataType: double
+		lineageTag: d709205f-21e9-4868-be41-6140c993f03d
+		summarizeBy: sum
+		sourceColumn: Distance (Miles)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Distance (KM)'
+		dataType: double
+		lineageTag: c127648e-dbdd-4d02-99ba-9df812ecb271
+		summarizeBy: sum
+		sourceColumn: Distance (KM)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Mens_Boston_Marathon_Winners = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\HumayunAli\Downloads\Power BI Source Control POC\PBI-Version-Control_POC\Mens_Boston_Marathon_Winners.csv"),[Delimiter=",", Columns=6, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Year", type text}, {"Winner", type text}, {"Country", type text}, {"Time", type time}, {"Distance (Miles)", type number}, {"Distance (KM)", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+
